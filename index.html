@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe AI | Aurora Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="aurora-background">
+        <div class="aurora-shape shape-1"></div>
+        <div class="aurora-shape shape-2"></div>
+        <div class="aurora-shape shape-3"></div>
+        <div class="aurora-shape shape-4"></div>
+    </div>
+
+    <nav class="app-navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">Tic-Tac-Toe <span class="ai-accent-nav">AI</span></a>
+            <button class="nav-toggle" id="nav-toggle-button" aria-label="Toggle navigation" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="nav-links-list">
+                <li><a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="about-ai.html" class="nav-link"><i class="fas fa-brain"></i> About The AI</a></li>
+                <li><a href="about-me.html" class="nav-link"><i class="fas fa-user-circle"></i> About Developer</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <header class="app-header">
+            <h1 class="main-title">
+                <span>Tic-Tac-Toe</span>
+                <span class="ai-accent">AI</span>
+            </h1>
+            <p class="subtitle">Experience intelligent gameplay & watch the learning process unfold.</p>
+        </header>
+
+        <div class="main-layout">
+            <main class="game-area card">
+                <div class="ai-selector-container">
+                    <label for="ai-type-selector" class="ai-selector-label">
+                        <i class="fas fa-cogs"></i> Choose AI Opponent:
+                    </label>
+                    <div class="custom-select-wrapper">
+                        <select id="ai-type-selector" name="ai-type" class="ai-selector-dropdown">
+                            <option value="q-learning">Q-Learning AI (Adaptive)</option>
+                            <option value="minimax">Minimax AI (Optimal)</option>
+                        </select>
+                        <i class="fas fa-chevron-down select-arrow"></i>
+                    </div>
+                </div>
+
+                <div id="status-message" class="status-message">Player X's turn</div>
+                <div id="board" class="game-board">
+                    </div>
+                <button id="reset-game-btn" class="btn btn-secondary btn-icon">
+                    <i class="fas fa-sync-alt"></i> Reset Game
+                </button>
+            </main>
+
+            <aside class="controls-sidebar">
+                <div id="q-learning-controls" class="q-learning-panel">
+                    <div class="sidebar-card card">
+                        <h2 class="card-title"><i class="fas fa-sliders-h"></i>Q-Learning Tuner</h2>
+                        <div class="slider-container">
+                            <label for="learning-rate" class="slider-label">Learning Rate (α): <span id="lr-value">0.1</span></label>
+                            <input type="range" id="learning-rate" class="slider" min="0" max="1" step="0.01" value="0.1">
+                        </div>
+                        <div class="slider-container">
+                            <label for="discount-factor" class="slider-label">Discount Factor (γ): <span id="df-value">0.9</span></label>
+                            <input type="range" id="discount-factor" class="slider" min="0" max="1" step="0.01" value="0.9">
+                        </div>
+                        <div class="slider-container">
+                            <label for="exploration-rate" class="slider-label">Exploration (ε): <span id="er-value">0.3</span></label>
+                            <input type="range" id="exploration-rate" class="slider" min="0" max="1" step="0.01" value="0.3">
+                        </div>
+                        <div class="slider-container">
+                            <label for="ai-speed" class="slider-label">AI Speed (ms): <span id="speed-value">500</span></label>
+                            <input type="range" id="ai-speed" class="slider" min="10" max="2000" step="10" value="500">
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card card">
+                        <h2 class="card-title"><i class="fas fa-graduation-cap"></i>Q-AI Training</h2>
+                        <div class="checkbox-container">
+                             <input type="checkbox" id="train-ai-checkbox" class="form-checkbox">
+                             <label for="train-ai-checkbox" class="form-checkbox-label">Enable AI vs AI Training</label>
+                        </div>
+                        <div class="button-group">
+                            <button id="start-training-btn" class="btn btn-primary btn-icon"><i class="fas fa-play-circle"></i>Start Training</button>
+                            <button id="stop-training-btn" class="btn btn-secondary btn-icon" disabled><i class="fas fa-stop-circle"></i>Stop Training</button>
+                        </div>
+                        <button id="play-optimized-ai-btn" class="btn btn-success btn-icon btn-full-width"><i class="fas fa-star"></i>Play Optimized Q-AI</button>
+                        <button id="reset-q-table-btn" class="btn btn-danger-secondary btn-icon btn-full-width"><i class="fas fa-trash-alt"></i>Reset Q-Table</button>
+                        
+                        <div class="button-group file-buttons">
+                            <button id="save-q-table-btn" class="btn btn-info btn-icon"><i class="fas fa-save"></i>Save Q-Table</button>
+                            <label for="load-q-table-input" class="btn btn-info btn-icon"><i class="fas fa-upload"></i>Load Q-Table</label>
+                            <input type="file" id="load-q-table-input" class="visually-hidden" accept=".json">
+                        </div>
+                    </div>
+                </div> <div class="sidebar-card card stats-card"> <h2 class="card-title"><i class="fas fa-chart-pie"></i>Game Statistics</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Player X Wins</span>
+                            <span id="player-x-wins" class="stat-value x-wins">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">AI Wins</span>
+                            <span id="player-o-wins" class="stat-value o-wins">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Draws</span>
+                            <span id="draws" class="stat-value draws">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Total Games</span>
+                            <span id="total-games" class="stat-value total-games">0</span>
+                        </div>
+                    </div>
+                    <div id="q-table-size-container" class="stat-item q-table-stat">
+                        <span class="stat-label">Q-Table Knowledge</span>
+                        <span id="q-table-size" class="stat-value">0</span> states
+                    </div>
+                    <p id="optimized-ai-active-msg" class="optimized-msg" style="display: none;">
+                        <i class="fas fa-bolt"></i> Optimized Q-AI Active (ε ≈ 0)
+                    </p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2025 Tic-Tac-Toe AI. Aurora Edition by Pradumon Sahani.</p>
+    </footer>
+
+    <script src="tic-tac-toe.js"></script>
+    <script src="q-learning-ttt.js"></script>
+    <script src="minimax-ai-ttt.js"></script>
+    <script src="ui-controller.js"></script>
+
+    <script>
+        // Cell placement animation
+        const boardObserver = new MutationObserver((mutationsList) => {
+            for (const mutation of mutationsList) {
+                if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                    const cellElement = mutation.target.nodeType === Node.TEXT_NODE ? mutation.target.parentElement : mutation.target;
+                    if (cellElement && cellElement.classList.contains('cell')) {
+                        const isFilled = cellElement.textContent === 'X' || cellElement.textContent === 'O';
+                        const alreadyAnimated = cellElement.classList.contains('cell-placed-animated');
+                        if (isFilled && !alreadyAnimated) {
+                            cellElement.classList.add('cell-placed');
+                            cellElement.classList.add('cell-placed-animated');
+                            setTimeout(() => cellElement.classList.remove('cell-placed'), 300); 
+                        } else if (!isFilled) {
+                            cellElement.classList.remove('cell-placed-animated');
+                        }
+                    }
+                }
+            }
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            const boardElement = document.getElementById('board');
+            if (boardElement) { // Only run game-specific scripts if board exists
+                const initialCellCheck = () => {
+                    const cells = boardElement.querySelectorAll('.cell');
+                    if (cells.length > 0) {
+                        cells.forEach(cell => {
+                            boardObserver.observe(cell, { childList: true, characterData: true, subtree: true });
+                        });
+                    } else {
+                        const boardContainerObserver = new MutationObserver((mutations, observer) => {
+                            const newCells = boardElement.querySelectorAll('.cell');
+                            if (newCells.length > 0) {
+                                newCells.forEach(cell => {
+                                    boardObserver.observe(cell, { childList: true, characterData: true, subtree: true });
+                                });
+                                observer.disconnect(); 
+                            }
+                        });
+                        boardContainerObserver.observe(boardElement, { childList: true });
+                    }
+                };
+                setTimeout(initialCellCheck, 200);
+            }
+
+            // Nav Toggle
+            const navToggleButton = document.getElementById('nav-toggle-button');
+            const navLinksList = document.getElementById('nav-links-list');
+            if (navToggleButton && navLinksList) {
+                navToggleButton.addEventListener('click', () => {
+                    const isExpanded = navToggleButton.getAttribute('aria-expanded') === 'true' || false;
+                    navToggleButton.setAttribute('aria-expanded', !isExpanded);
+                    navLinksList.classList.toggle('show');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

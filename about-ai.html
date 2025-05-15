@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About The AI - Tic-Tac-Toe AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="aurora-background">
+        <div class="aurora-shape shape-1"></div>
+        <div class="aurora-shape shape-2"></div>
+        <div class="aurora-shape shape-3"></div>
+        <div class="aurora-shape shape-4"></div>
+    </div>
+
+    <nav class="app-navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">Tic-Tac-Toe <span class="ai-accent-nav">AI</span></a>
+            <button class="nav-toggle" id="nav-toggle-button" aria-label="Toggle navigation" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="nav-links-list">
+                <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="about-ai.html" class="nav-link active"><i class="fas fa-brain"></i> About The AI</a></li>
+                <li><a href="about-me.html" class="nav-link"><i class="fas fa-user-circle"></i> About Developer</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content-wrapper static-page-wrapper">
+        <header class="app-header static-page-header">
+            <h1 class="main-title"><span>Understanding The</span> <span class="ai-accent">Intelligence</span></h1>
+            <p class="subtitle">A detailed look into the Q-Learning and Minimax algorithms powering the Tic-Tac-Toe AI.</p>
+        </header>
+
+        <main class="static-content card">
+            <section class="content-section">
+                <h2 class="section-title"><i class="fas fa-lightbulb"></i> Overview of AI Agents</h2>
+                <p>This application showcases two distinct AI methodologies for playing Tic-Tac-Toe. Each AI approaches the game with a different strategy and operational principle:</p>
+                <ul>
+                    <li><strong>Q-Learning AI:</strong> A dynamic, adaptive agent based on Reinforcement Learning. It learns optimal strategies by playing the game and receiving feedback in the form of rewards and penalties.</li>
+                    <li><strong>Minimax AI:</strong> A classic, deterministic algorithm rooted in game theory. It plays perfectly by exploring all possible game outcomes and selecting the move that guarantees the best result against an optimal opponent.</li>
+                </ul>
+                <p>The ability to switch between these AIs allows for a comparative study of different AI paradigms within the same familiar game environment.</p>
+            </section>
+
+            <section class="content-section">
+                <h2 class="section-title"><i class="fas fa-graduation-cap"></i> The Q-Learning AI: Learning from Experience</h2>
+                <p>The Q-Learning AI embodies the principles of Reinforcement Learning, a branch of machine learning where an agent learns to make a sequence of decisions by trying them out and learning from the consequences.</p>
+                
+                <h3>Core Concept: The "Quality" of Actions</h3>
+                <p>Q-Learning aims to determine the "Quality" (or Q-value) of taking a specific action when the game is in a particular state. A high Q-value for a state-action pair <code>Q(s,a)</code> implies that taking action <code>a</code> in state <code>s</code> is likely to lead to a high cumulative future reward (e.g., winning the game).</p>
+
+                <h3>The Q-Table: The AI's Brain</h3>
+                <p>The AI's knowledge is stored in a data structure called the **Q-table**. Think of it as an extensive cheat sheet or memory map:</p>
+                <ul>
+                    <li><strong>Structure:</strong> It's essentially a lookup table. In this implementation (<code>q-learning-ttt.js</code>), it's an object where each key is a unique representation of a game state. The value associated with each state-key is another object, mapping possible actions (from that state) to their learned Q-values.
+                        <br><code>qTable = { "state1_string": { action1_index: Q_value, action2_index: Q_value, ... }, "state2_string": { ... } }</code></li>
+                    <li><strong>State Representation (<code>s</code>):</strong> Each unique configuration of the Tic-Tac-Toe board is a "state." The game board array (e.g., <code>[1, 0, 2, 0, 1, 0, 0, 2, 0]</code> where 1 is 'X', 2 is 'O', and 0 is empty) is converted into a unique string (e.g., <code>"102010020"</code>) by the <code>getBoardStateString()</code> function. This string serves as the key for the state in the Q-table.</li>
+                    <li><strong>Action Representation (<code>a</code>):</strong> An action corresponds to placing the AI's mark ('O') into one of the empty cells. The actions are typically represented by the numerical index of the cell on the 3x3 board (0 through 8).</li>
+                    <li><strong>Q-Values <code>Q(s,a)</code>:</strong> These are the numerical scores stored in the table, representing the expected long-term utility of taking action <code>a</code> in state <code>s</code>.</li>
+                    <li><strong>Initialization:</strong> When the AI starts, or when the Q-table is reset (<code>resetQTable()</code>), it's empty. As the AI encounters new states or new actions within known states, entries are created and typically initialized to 0. This signifies that the AI initially has no preference or knowledge about any move.</li>
+                </ul>
+
+                <h3>The Learning Algorithm: Step-by-Step</h3>
+                <p>The Q-Learning AI learns through an iterative process of playing the game many times:</p>
+                <ol>
+                    <li><strong>Observe State (S):</strong> The AI identifies the current configuration of the board.</li>
+                    <li><strong>Choose an Action (A) - Epsilon-Greedy Strategy:</strong> This is a crucial step that balances learning new things (exploration) with using what's already learned (exploitation). The <code>chooseAction()</code> function implements this:
+                        <ul>
+                            <li>With a probability of <strong>ε (epsilon, the Exploration Rate)</strong>, the AI chooses a random action from the available moves. This is **exploration**, allowing the AI to try out moves it might not otherwise consider, potentially discovering better strategies or refining Q-values for less-visited state-action pairs.</li>
+                            <li>With a probability of <strong>1-ε</strong>, the AI chooses the action that has the highest Q-value for the current state based on its current Q-table. This is **exploitation**, leveraging its existing knowledge to make the best perceived move.</li>
+                            <li>The <code>explorationRate</code> (ε) is a key hyperparameter. It's often started high (e.g., 1.0 or 0.3 in this game) to encourage broad exploration and is gradually decreased (decayed) as the AI learns more, shifting the balance towards exploitation.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Perform Action & Observe Outcome:</strong> The AI makes its chosen move. The game transitions to a new state (S'), and the AI receives an immediate reward (R).
+                        <ul>
+                            <li><strong>Reward Structure (<code>getReward()</code>):</strong>
+                                <ul>
+                                    <li><code>+1.0</code>: For winning the game.</li>
+                                    <li><code>-1.0</code>: For losing the game.</li>
+                                    <li><code>+0.5</code>: For a draw.</li>
+                                    <li><code>-0.01</code> (configurable): A small penalty for moves that don't immediately end the game. This can encourage the AI to find shorter paths to victory, though setting it to 0 is also common.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Update Q-Value (The Bellman Equation):</strong> This is the core of the learning process, handled by the <code>updateQTable()</code> function. The Q-value for the state-action pair (S,A) that was just experienced is updated using the following formula:
+                        <p><code>Q_new(S, A) = Q_old(S, A) + α * [R + γ * max_a' Q(S', a') - Q_old(S, A)]</code></p>
+                        Let's break down the components:
+                        <ul>
+                            <li><code>Q_old(S, A)</code>: The current Q-value before the update.</li>
+                            <li><code>α</code> (Alpha) - **Learning Rate**: A value between 0 and 1. It controls how much the newly acquired information (the "temporal difference error" in the square brackets) overrides the old Q-value.
+                                <ul>
+                                    <li>A learning rate of 0 means the AI learns nothing (Q-values never change).</li>
+                                    <li>A learning rate of 1 means the AI considers only the most recent information, discarding old knowledge.</li>
+                                    <li>In this game, you can adjust it via the "Learning Rate" slider.</li>
+                                </ul>
+                            </li>
+                            <li><code>R</code>: The immediate reward received after taking action A in state S and moving to state S'.</li>
+                            <li><code>γ</code> (Gamma) - **Discount Factor**: A value between 0 and 1. It determines the importance of future rewards.
+                                <ul>
+                                    <li>A discount factor of 0 makes the AI "myopic" (short-sighted), only caring about immediate rewards.</li>
+                                    <li>A discount factor close to 1 (e.g., 0.9) makes the AI value future rewards highly, encouraging it to plan for long-term success.</li>
+                                    <li>Adjustable via the "Discount Factor" slider.</li>
+                                </ul>
+                            </li>
+                            <li><code>max_a' Q(S', a')</code>: This is the AI's current best estimate of the maximum possible Q-value achievable from the *next state* (S'). It looks at all possible actions (a') from S' and picks the one with the highest Q-value. If S' is a terminal state (game over), this term is 0. This "look-ahead" component is what allows the AI to learn about the long-term consequences of its actions.</li>
+                            <li>The term <code>[R + γ * max_a' Q(S', a') - Q_old(S, A)]</code> is called the **Temporal Difference (TD) error**. It represents the difference between the newly estimated value of taking action A in state S (based on the reward and future prospects) and the old Q-value.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Repeat:</strong> The AI continues this loop of observing, acting, and updating, typically over thousands or even millions of game episodes (for more complex games).</li>
+                </ol>
+                <p>Over many iterations, the Q-values in the Q-table gradually converge towards their true optimal values, allowing the AI to make increasingly better decisions.</p>
+
+                <h3>Hyperparameters & Their Impact (Q-Learning):</h3>
+                <p>The UI allows you to adjust these critical parameters:</p>
+                <ul>
+                    <li><strong>Learning Rate (α):</strong> Higher values make the AI learn faster from recent experiences but can make learning unstable if too high. Lower values lead to slower, more gradual learning.</li>
+                    <li><strong>Discount Factor (γ):</strong> Higher values encourage the AI to plan for future rewards (e.g., setting up a win a few moves ahead). Lower values make it focus on immediate gains.</li>
+                    <li><strong>Exploration Rate (ε):</strong>
+                        <ul>
+                            <li><strong>During Training:</strong> Starts high (e.g., 1.0 for full exploration) and decays with each game. This ensures the AI explores a wide range of possibilities early on and then increasingly exploits its knowledge as it becomes more confident.</li>
+                            <li><strong>During "Play Optimized Q-AI" Mode:</strong> Set to a very low value (e.g., 0.01) to make the AI almost always choose the best move it knows, minimizing random actions.</li>
+                            <li><strong>Manual Adjustment:</strong> The slider allows you to set a base exploration rate for when the AI is not in dedicated training or optimized mode.</li>
+                        </ul>
+                    </li>
+                    <li><strong>AI Thinking Speed:</strong> This is a UI delay before the AI makes its move, primarily for observational purposes. It does not affect the AI's learning algorithm speed but can make training appear slower if set high. For maximum training speed, it's set to near zero.</li>
+                </ul>
+
+                <h3>Training the Q-Learning AI:</h3>
+                <p>The "Train AI (AI vs AI)" mode accelerates learning. In this mode:</p>
+                <ul>
+                    <li>The Q-Learning AI (Player O) plays against a simple, random-moving AI (Player X).</li>
+                    <li>Games are played very quickly (minimal UI delay).</li>
+                    <li>The Q-Learning AI continuously updates its Q-table based on the outcomes.</li>
+                    <li>The exploration rate (ε) for the Q-Learning AI starts high and gradually decays, allowing it to transition from exploration to exploitation.</li>
+                </ul>
+                <p>The "Q-Table Size" statistic shows the number of unique board states the AI has encountered and stored in its Q-table. A larger size generally indicates more experience, though not necessarily better play if the Q-values haven't converged well.</p>
+            </section>
+
+            <section class="content-section">
+                <h2 class="section-title"><i class="fas fa-chess-knight"></i> The Minimax AI: Perfect Play Through Logic</h2>
+                <p>The Minimax AI operates on a completely different principle from Q-Learning. It's a classic algorithm from game theory used for making optimal decisions in two-player, zero-sum games (where one player's gain is the other's loss) with perfect information (like Tic-Tac-Toe).</p>
+
+                <h3>Core Concept: Minimizing Maximum Loss / Maximizing Minimum Gain</h3>
+                <p>Minimax assumes that both players will play optimally. The AI (the "Maximizing" player, or MAX) aims to choose a move that leads to the best possible outcome for itself, assuming the opponent (the "Minimizing" player, or MIN) will always try to choose a move that is worst for the AI (and best for the opponent).</p>
+
+                <h3>The Game Tree: Exploring Possibilities</h3>
+                <p>Minimax works by conceptually (or actually, for small games) building a **game tree** from the current board state:</p>
+                <ul>
+                    <li><strong>Nodes:</strong> Each node in the tree represents a possible board state.</li>
+                    <li><strong>Edges (Branches):</strong> Each edge represents a move that transitions from one state to another.</li>
+                    <li><strong>Root Node:</strong> The current board configuration.</li>
+                    <li><strong>Leaf Nodes (Terminal Nodes):</strong> States where the game has ended (a win for X, a win for O, or a draw).</li>
+                </ul>
+
+                <h3>The Minimax Algorithm: Recursive Evaluation</h3>
+                <p>The algorithm recursively explores this game tree. The <code>minimax()</code> function in <code>minimax-ai-ttt.js</code> implements this:</p>
+                <ol>
+                    <li><strong>Utility Function (Base Case):</strong>
+                        <ul>
+                            <li>If the current board state is a terminal state (game over), the function returns a "utility" score for that state. In this implementation:
+                                <ul>
+                                    <li><code>+10</code> if the AI (MAX player) wins.</li>
+                                    <li><code>-10</code> if the Human/Opponent (MIN player) wins.</li>
+                                    <li><code>0</code> for a draw.</li>
+                                </ul>
+                            </li>
+                            <li>The `depth` of the game tree is also factored into the score (e.g., <code>scores[winner] - depth</code> for MAX, or <code>scores[winner] + depth</code> for MIN in some variations). This encourages the AI to prefer quicker wins or to delay losses if multiple paths lead to the same terminal outcome. The provided code uses <code>scores[winner] - (isMaximizing ? -depth : depth)</code> which effectively prefers faster wins for MAX and faster losses for MIN (from MAX's perspective).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Recursive Step (For Non-Terminal States):</strong>
+                        <ul>
+                            <li><strong>If it's MAX's (AI's) turn to move (<code>isMaximizing = true</code>):</strong>
+                                <ol>
+                                    <li>Initialize <code>bestScore = -Infinity</code>.</li>
+                                    <li>For each available move the AI can make:
+                                        <ol>
+                                            <li>Simulate making that move to get a new board state.</li>
+                                            <li>Recursively call <code>minimax()</code> on this new state (it will now be MIN's turn, so <code>isMaximizing</code> becomes <code>false</code>).</li>
+                                            <li>Update <code>bestScore = Math.max(bestScore, score_returned_by_recursive_call)</code>. The AI wants to pick the move that leads to the branch with the highest possible score.</li>
+                                        </ol>
+                                    </li>
+                                    <li>Return <code>bestScore</code>.</li>
+                                </ol>
+                            </li>
+                            <li><strong>If it's MIN's (Opponent's) turn to move (<code>isMaximizing = false</code>):</strong>
+                                <ol>
+                                    <li>Initialize <code>bestScore = +Infinity</code>.</li>
+                                    <li>For each available move the opponent can make:
+                                        <ol>
+                                            <li>Simulate making that move to get a new board state.</li>
+                                            <li>Recursively call <code>minimax()</code> on this new state (it will now be MAX's turn, so <code>isMaximizing</code> becomes <code>true</code>).</li>
+                                            <li>Update <code>bestScore = Math.min(bestScore, score_returned_by_recursive_call)</code>. The opponent is assumed to pick the move that leads to the branch with the lowest possible score (from the AI's perspective).</li>
+                                        </ol>
+                                    </li>
+                                    <li>Return <code>bestScore</code>.</li>
+                                </ol>
+                            </li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h3>Finding the Best Move:</h3>
+                <p>The <code>findBestMove()</code> function in <code>minimax-ai-ttt.js</code> initiates this process for the AI:</p>
+                <ol>
+                    <li>It gets the current board state and all available moves for the AI.</li>
+                    <li>For each available move:
+                        <ol>
+                            <li>It simulates the AI making that move.</li>
+                            <li>It then calls the <code>minimax()</code> function on the resulting board state, assuming it's now the opponent's (MIN player's) turn (so <code>isMaximizing</code> is set to <code>false</code> for this first recursive call from <code>findBestMove</code>).</li>
+                            <li>The score returned by <code>minimax()</code> represents the best outcome the AI can expect *if* it makes that initial move, and both players continue optimally.</li>
+                        </ol>
+                    </li>
+                    <li>The <code>findBestMove()</code> function selects the initial move that yields the highest score from these evaluations.</li>
+                </ol>
+
+                <h3>Optimality and Determinism:</h3>
+                <ul>
+                    <li><strong>Perfect Play:</strong> For a game like Tic-Tac-Toe with a relatively small and finite game tree, Minimax can explore all relevant possibilities. This means it can determine the absolute best move in any situation, leading to perfect play. An optimal Minimax Tic-Tac-Toe AI will never lose; it will always win or draw if such outcomes are possible from the current state.</li>
+                    <li><strong>No "Learning" or Training:</strong> Minimax doesn't learn from past games or build up a Q-table. Its decisions are based purely on the logical exploration of the game tree according to the game's rules and the scoring of terminal states. It's deterministic: given the same board state, it will always choose the same optimal move (or one of them, if multiple moves are equally optimal).</li>
+                    <li><strong>Computational Cost:</strong> While optimal, Minimax can be computationally expensive for games with large game trees (like Chess or Go). For Tic-Tac-Toe, it's very efficient. (Note: The provided implementation does not include optimizations like Alpha-Beta Pruning, which would be crucial for more complex games but is not strictly necessary for Tic-Tac-Toe's small state space).</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2 class="section-title"><i class="fas fa-code-branch"></i> Comparing the AIs</h2>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Q-Learning AI</th>
+                            <th>Minimax AI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Learning Method</strong></td>
+                            <td>Reinforcement Learning (learns from experience/rewards)</td>
+                            <td>Game Theory (logical deduction, explores game tree)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Optimality</strong></td>
+                            <td>Approaches optimality with sufficient training; can make mistakes if not fully trained or if exploration is high.</td>
+                            <td>Plays perfectly/optimally (will always win or draw if possible).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Knowledge Storage</strong></td>
+                            <td>Q-Table (stores values of state-action pairs)</td>
+                            <td>No persistent storage of learned values; calculates on the fly.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Training Required</strong></td>
+                            <td>Yes, learns by playing many games.</td>
+                            <td>No, strategy is inherent in the algorithm.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Adaptability</strong></td>
+                            <td>Can adapt if game rules or opponent strategies change (with retraining).</td>
+                            <td>Assumes fixed rules and optimal opponent; less directly adaptable to changing dynamics without algorithmic changes.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Computational Approach</strong></td>
+                            <td>Updates Q-values based on experience; action selection is typically fast once trained.</td>
+                            <td>Recursive search of the game tree; can be computationally intensive for complex games.</td>
+                        </tr>
+                         <tr>
+                            <td><strong>Determinism</strong></td>
+                            <td>Can be stochastic (random) during exploration; deterministic during exploitation (if tie-breaking is consistent).</td>
+                            <td>Deterministic (always chooses the same optimal move or one of equivalent value).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="content-section">
+                <h2 class="section-title"><i class="fas fa-cogs"></i> Implemented Game Features</h2>
+                <p>This application provides several features to interact with and observe these AIs:</p>
+                <ul>
+                    <li><strong>AI Opponent Selection:</strong> Choose to play against either the Q-Learning AI or the Minimax AI.</li>
+                    <li><strong>Q-Learning Controls:</strong> Adjust hyperparameters (Learning Rate, Discount Factor, Exploration Rate) for the Q-Learning AI to observe their impact on its learning and decision-making.</li>
+                    <li><strong>Q-Learning Training Mode:</strong> Allow the Q-Learning AI to play against a random opponent for rapid learning.</li>
+                    <li><strong>Play Optimized Q-AI:</strong> Challenge the Q-Learning AI when it's set to primarily exploit its learned knowledge (low exploration).</li>
+                    <li><strong>Save/Load Q-Table:</strong> Preserve and resume the Q-Learning AI's training progress.</li>
+                    <li><strong>AI Thinking Speed:</strong> Introduce a visual delay for AI moves, useful for observing the game flow.</li>
+                    <li><strong>Comprehensive Statistics:</strong> Track game outcomes and the Q-Learning AI's knowledge base size.</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2025 Tic-Tac-Toe AI. Aurora Edition by Pradumon Sahani.</p>
+    </footer>
+
+    <script>
+        // Nav Toggle for mobile
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggleButton = document.getElementById('nav-toggle-button');
+            const navLinksList = document.getElementById('nav-links-list');
+            if (navToggleButton && navLinksList) {
+                navToggleButton.addEventListener('click', () => {
+                    const isExpanded = navToggleButton.getAttribute('aria-expanded') === 'true' || false;
+                    navToggleButton.setAttribute('aria-expanded', !isExpanded);
+                    navLinksList.classList.toggle('show');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

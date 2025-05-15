@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About The Developer - Tic-Tac-Toe AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="aurora-background">
+        <div class="aurora-shape shape-1"></div>
+        <div class="aurora-shape shape-2"></div>
+        <div class="aurora-shape shape-3"></div>
+        <div class="aurora-shape shape-4"></div>
+    </div>
+
+    <nav class="app-navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">Tic-Tac-Toe <span class="ai-accent-nav">AI</span></a>
+            <button class="nav-toggle" id="nav-toggle-button" aria-label="Toggle navigation" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="nav-links-list">
+                <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="about-ai.html" class="nav-link"><i class="fas fa-brain"></i> About The AI</a></li>
+                <li><a href="about-me.html" class="nav-link active"><i class="fas fa-user-circle"></i> About Developer</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content-wrapper static-page-wrapper">
+        <header class="app-header static-page-header">
+            <h1 class="main-title"><span>About The</span> <span class="ai-accent">Developer</span></h1>
+        </header>
+
+        <main class="static-content card about-developer-card">
+            <div class="developer-profile">
+                <h2 class="developer-name">Pradumon Sahani</h2>
+                <p class="developer-tagline">Aspiring AI Enthusiast & Web Developer</p>
+            </div>
+
+            <section class="content-section">
+                <h3 class="section-subtitle"><i class="fas fa-info-circle"></i> Introduction</h3>
+                <p>Hello! I'm Pradumon Sahani, the developer behind this Tic-Tac-Toe AI project. I am passionate about exploring the fascinating world of Artificial Intelligence and its applications, particularly in game development and web technologies. This project was born out of a desire to learn, experiment, and create an interactive demonstration of fundamental AI concepts.</p>
+            </section>
+
+            <section class="content-section">
+                <h3 class="section-subtitle"><i class="fas fa-lightbulb"></i> Project Motivation</h3>
+                <p>My primary motivation for creating this Tic-Tac-Toe AI was to gain hands-on experience with Reinforcement Learning (specifically Q-Learning) and classic game theory algorithms like Minimax. Tic-Tac-Toe, while simple, provides an excellent platform for understanding these concepts due to its defined rules and manageable state space. I aimed to build an application that is not only functional but also educational and engaging for users interested in AI.</p>
+            </section>
+
+            <section class="content-section">
+                <h3 class="section-subtitle"><i class="fas fa-tools"></i> Skills & Technologies</h3>
+                <p>During the development of this project, and in my broader learning journey, I've worked with a range of technologies and concepts, including:</p>
+                <ul class="skills-list">
+                    <li><strong>Programming Languages:</strong> JavaScript (primarily for this project), Python</li>
+                    <li><strong>Web Technologies:</strong> HTML5, CSS3 (including Tailwind CSS for utility-first styling), Modern JavaScript (ES6+)</li>
+                    <li><strong>Artificial Intelligence:</strong> Reinforcement Learning (Q-Learning), Game Theory (Minimax Algorithm), State Space Search</li>
+                    <li><strong>Development Tools:</strong> Git, VS Code, Browser Developer Tools</li>
+                    <li><strong>Design:</strong> Basic UI/UX principles, Responsive Web Design</li>
+                </ul>
+            </section>
+            
+            <section class="content-section">
+                <h3 class="section-subtitle"><i class="fas fa-code-branch"></i> Future Aspirations</h3>
+                <p>I plan to continue exploring more complex AI algorithms and apply them to different types of games and applications. My goal is to contribute to projects that leverage AI for innovative solutions and user experiences. I'm always eager to learn new technologies and methodologies in the ever-evolving field of software development and artificial intelligence.</p>
+            </section>
+
+            <section class="content-section">
+                <h3 class="section-subtitle"><i class="fas fa-link"></i> Connect & Explore</h3>
+                <p>Feel free to explore the codebase and connect with me through the following (these are placeholders, please update them!):</p>
+                <div class="social-links">
+                    <a href="https://www.github.com/pradumon14" target="_blank" class="social-link btn btn-secondary btn-icon"><i class="fab fa-github"></i> GitHub</a>
+                  
+                    </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2025 Tic-Tac-Toe AI. Aurora Edition by Pradumon Sahani.</p>
+    </footer>
+
+    <script>
+        // Nav Toggle for mobile
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggleButton = document.getElementById('nav-toggle-button');
+            const navLinksList = document.getElementById('nav-links-list');
+            if (navToggleButton && navLinksList) {
+                navToggleButton.addEventListener('click', () => {
+                    const isExpanded = navToggleButton.getAttribute('aria-expanded') === 'true' || false;
+                    navToggleButton.setAttribute('aria-expanded', !isExpanded);
+                    navLinksList.classList.toggle('show');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
